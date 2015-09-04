@@ -5,9 +5,9 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Richiban.Func", "Richiban.Func\Richiban.Func.csproj", "{F5714BB0-0A2E-4D7A-B1F4-BBCF97AEDB05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Richiban.Func.Tests.Unit", "..\Richiban.Func.Tests.Unit\Richiban.Func.Tests.Unit.csproj", "{A09C17FA-76E7-4991-8617-BA021BB48B73}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D11F0D15-E0C5-4047-A810-B6A7D785B126}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Richiban.Func.Tests.Unit", "Richiban.Func.Tests.Unit\Richiban.Func.Tests.Unit.csproj", "{A09C17FA-76E7-4991-8617-BA021BB48B73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
