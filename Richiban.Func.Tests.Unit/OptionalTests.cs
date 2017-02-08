@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Richiban.Func.Tests.Unit
 {
     [TestFixture]
-    public class OptionalTests
+    public sealed class OptionalTests
     {
         [Test]
         public void HasValue_returns_false_for_None()
