@@ -6,8 +6,8 @@ namespace Richiban.Func
 {
     /// <inheritdoc />
     /// <summary>
-    /// A lazily-evaluated singly linked list.
-    /// Also supports deconstruction into a tuple of the head and tail.
+    /// A singly linked list that is lazily-evaluated but otherwise immutable.
+    /// Supports deconstruction into a tuple of the head and tail.
     /// </summary>
     public sealed class Chain<T> : IEnumerable<T>
     {
