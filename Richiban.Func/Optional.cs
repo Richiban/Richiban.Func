@@ -29,15 +29,9 @@ namespace Richiban.Func
             }
         }
 
-        public static Optional<T> Create(T value)
-        {
-            return new Optional<T>(value);
-        }
+        public static Optional<T> Create(T value) => new Optional<T>(value);
 
-        public static implicit operator Optional<T>(T value)
-        {
-            return new Optional<T>(value);
-        }
+        public static implicit operator Optional<T>(T value) => new Optional<T>(value);
 
         public Optional<TResult> Select<TResult>(Func<T, TResult> func)
         {
@@ -94,6 +88,7 @@ namespace Richiban.Func
         {
             if (HasValue)
                 return _value;
+
             return defaultValue;
         }
 
@@ -101,6 +96,7 @@ namespace Richiban.Func
         {
             if (HasValue)
                 return some(_value);
+
             return none();
         }
 
@@ -118,10 +114,7 @@ namespace Richiban.Func
                 yield return Value;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public override string ToString()
         {
@@ -129,6 +122,7 @@ namespace Richiban.Func
             {
                 return _value.ToString();
             }
+
             return "<none>";
         }
     }

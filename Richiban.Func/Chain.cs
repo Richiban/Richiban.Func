@@ -1,47 +1,86 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Richiban.Func
 {
+    /// <inheritdoc />
     /// <summary>
-    /// A Chain is a lazily-evaluated singly linked list.
-    /// 
-    /// It also supports deconstruction into a tuple of the head and tail.
+    /// A lazily-evaluated singly linked list.
+    /// Also supports deconstruction into a tuple of the head and tail.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public sealed class Chain<T> : IEnumerable<T>
     {
         public Chain(IEnumerable<T> source) : this(source.GetEnumerator()) { }
 
         private Chain(IEnumerator<T> enumerator)
         {
-            _isEmpty = new Lazy<bool>(() => !enumerator.MoveNext());
-            _head = new Lazy<T>(() => enumerator.Current);
-            _tail = new Lazy<Chain<T>>(() => new Chain<T>(enumerator));
+            _enumerator = enumerator;
         }
 
-        private readonly Lazy<bool> _isEmpty;
-        public bool IsEmpty => _isEmpty.Value;
+        private readonly IEnumerator<T> _enumerator;
+        private bool _isMaterialized = false;
+        private bool _isEmpty;
+        private T _head;
+        private Chain<T> _tail;
 
-        private readonly Lazy<T> _head;
+        private void EnsureMaterialized()
+        {
+            if (_isMaterialized)
+                return;
+
+            _isEmpty = !_enumerator.MoveNext();
+            _isMaterialized = true;
+
+            if (_isEmpty == false)
+            {
+                _head = _enumerator.Current;
+                _tail = new Chain<T>(_enumerator);
+            }
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                EnsureMaterialized();
+
+                return _isEmpty;
+            }
+        }
 
         public T Head
         {
             get
             {
+                EnsureMaterialized();
+
                 if (IsEmpty)
                     throw new InvalidOperationException("Chain is empty");
                 else
-                    return _head.Value;
+                    return _head;
             }
         }
 
-        private readonly Lazy<Chain<T>> _tail;
-        public Chain<T> Tail => _tail.Value;
+        public Chain<T> Tail
+        {
+
+            get
+            {
+                EnsureMaterialized();
+
+                if (IsEmpty)
+                    throw new InvalidOperationException("Chain is empty");
+                else
+                    return _tail;
+            }
+        }
+
+        public void Deconstruct(out T head, out Chain<T> tail)
+        {
+            head = Head;
+            tail = Tail;
+        }
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -56,11 +95,5 @@ namespace Richiban.Func
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public void Deconstruct(out T head, out Chain<T> tail)
-        {
-            head = Head;
-            tail = Tail;
-        }
     }
 }

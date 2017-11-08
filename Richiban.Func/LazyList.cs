@@ -5,33 +5,36 @@ using System.Linq;
 
 namespace Richiban.Func
 {
+    /// <inheritdoc />
     /// <summary>
-    /// A class that wraps an IEnumerable and stores each returned element of that IEnumerable
+    /// A class that wraps an IEnumerable and stores each yielded element of that IEnumerable
     /// in a list, as it is evaluated.
     /// </summary>
-    public class LazyList<T> : IEnumerable<T>, IReadOnlyList<T>
+    public sealed class LazyList<T> : IReadOnlyList<T>
     {
         private readonly IEnumerator<T> _sourceEnumerator;
         private readonly IList<T> _cache = new List<T>();
         private bool _finishedEnumerating = false;
 
-        public LazyList(IEnumerable<T> source)
+        public LazyList(IEnumerable<T> source) : this(source.GetEnumerator()) { }
+
+        private LazyList(IEnumerator<T> sourceEnumerator)
         {
-            _sourceEnumerator = source.GetEnumerator();
+            _sourceEnumerator = sourceEnumerator;
         }
 
         public T this[int index]
         {
             get
             {
-                var shouldAdvance = index >= _cache.Count && !_finishedEnumerating;
+                var indexHasBeenCached = index < _cache.Count || _finishedEnumerating;
 
-                if (!shouldAdvance)
+                if (indexHasBeenCached)
                     return _cache[index];
 
-                var advanceByN = index - _cache.Count;
+                var numItemsToAdvance = index - _cache.Count;
 
-                return AdvanceEnumeration().ElementAt(advanceByN);
+                return RemainingEnumeration().ElementAt(numItemsToAdvance);
             }
         }
 
@@ -40,9 +43,9 @@ namespace Richiban.Func
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         private IEnumerable<T> Enumerate() =>
-            _finishedEnumerating ? _cache : _cache.Concat(AdvanceEnumeration());
+            _finishedEnumerating ? _cache : _cache.Concat(RemainingEnumeration());
 
-        private IEnumerable<T> AdvanceEnumeration()
+        private IEnumerable<T> RemainingEnumeration()
         {
             while (_sourceEnumerator.MoveNext())
             {
@@ -53,6 +56,5 @@ namespace Richiban.Func
             _finishedEnumerating = true;
             _sourceEnumerator.Dispose();
         }
-
     }
 }
