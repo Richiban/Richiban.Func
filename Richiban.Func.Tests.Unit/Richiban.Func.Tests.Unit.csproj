@@ -51,7 +51,7 @@
   <ItemGroup>
     <Compile Include="ChainTests.cs" />
     <Compile Include="LazyListTests.cs" />
-    <Compile Include="OptionalTests.cs" />
+    <Compile Include="OptionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrieTests.cs" />
   </ItemGroup>

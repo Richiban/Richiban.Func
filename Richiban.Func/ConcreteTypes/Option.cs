@@ -4,81 +4,79 @@ using System.Collections.Generic;
 
 namespace Richiban.Func
 {
-    public struct Optional<T> : IEnumerable<T>
+    public struct Option<T> : IEnumerable<T>
     {
-        public static readonly Optional<T> None = new Optional<T>();
+        public static readonly Option<T> None = new Option<T>();
         private readonly T _value;
-        public readonly bool HasValue;
+        public bool IsSome { get; }
 
-        public Optional(T value)
+        public Option(T value)
         {
-            HasValue = value != null;
+            IsSome = value != null;
 
             _value = value;
         }
 
-        public T Value
+        public T Force()
         {
-            get
+            if (IsSome)
             {
-                if (HasValue)
-                {
-                    return _value;
-                }
-                throw new InvalidOperationException("The Optional does not have a value");
+                return _value;
             }
+
+            throw new InvalidOperationException("The Optional does not have a value");
         }
 
-        public static Optional<T> Create(T value) => new Optional<T>(value);
+        public static Option<T> Create(T value) => new Option<T>(value);
 
-        public static implicit operator Optional<T>(T value) => new Optional<T>(value);
+        public static implicit operator Option<T>(T value) => new Option<T>(value);
 
-        public Optional<TResult> Select<TResult>(Func<T, TResult> func)
+        public Option<TResult> Select<TResult>(Func<T, TResult> func)
         {
-            if (HasValue)
-                return new Optional<TResult>(func(_value));
+            if (IsSome)
+                return new Option<TResult>(func(_value));
 
-            return new Optional<TResult>();
+            return new Option<TResult>();
         }
 
-        public Optional<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> func)
+        public Option<TResult> SelectMany<TResult>(Func<T, Option<TResult>> func)
         {
-            if (HasValue)
+            if (IsSome)
                 return func(_value);
 
-            return new Optional<TResult>();
+            return new Option<TResult>();
         }
 
-        public Optional<TResult> SelectMany<TCollection, TResult>(
-            Func<T, Optional<TCollection>> intermediateSelector,
+        public Option<TResult> SelectMany<TCollection, TResult>(
+            Func<T, Option<TCollection>> intermediateSelector,
             Func<T, TCollection, TResult> resultSelector)
         {
-            if (HasValue)
+            if (IsSome)
             {
                 var inner = intermediateSelector(_value);
 
-                if (inner.HasValue)
+                if (inner.IsSome)
                 {
                     return resultSelector(_value, inner._value);
                 }
             }
 
-            return new Optional<TResult>();
+            return new Option<TResult>();
         }
 
-        public Optional<T> Where(Func<T, bool> func)
+        public Option<T> Where(Func<T, bool> func)
         {
-            if (HasValue && func(_value))
+            if (IsSome && func(_value))
             {
                 return this;
             }
 
-            return new Optional<T>();
+            return new Option<T>();
         }
 
         public void Iter(Action<T> action)
         {
-            if (HasValue)
+            if (IsSome)
             {
                 action(_value);
             }
@@ -86,7 +84,7 @@ namespace Richiban.Func
 
         public T GetValueOrDefault(T defaultValue = default(T))
         {
-            if (HasValue)
+            if (IsSome)
                 return _value;
 
             return defaultValue;
@@ -94,7 +92,7 @@ namespace Richiban.Func
 
         public TResult Match<TResult>(Func<TResult> none, Func<T, TResult> some)
         {
-            if (HasValue)
+            if (IsSome)
                 return some(_value);
 
             return none();
@@ -102,7 +100,7 @@ namespace Richiban.Func
 
         public void Switch(Action none, Action<T> some)
         {
-            if (HasValue)
+            if (IsSome)
                 some(_value);
 
             none();
@@ -110,15 +108,15 @@ namespace Richiban.Func
 
         public IEnumerator<T> GetEnumerator()
         {
-            if (HasValue)
-                yield return Value;
+            if (IsSome)
+                yield return Force();
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public override string ToString()
         {
-            if (HasValue)
+            if (IsSome)
             {
                 return _value.ToString();
             }
