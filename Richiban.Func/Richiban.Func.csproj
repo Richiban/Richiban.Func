@@ -42,14 +42,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstractions\ISequence.cs" />
-    <Compile Include="ConcreteTypes\Chain.cs" />
+    <Compile Include="Lazy\Chain.cs" />
     <Compile Include="Abstractions\IMap.cs" />
     <Compile Include="Abstractions\IMutableMap.cs" />
-    <Compile Include="ConcreteTypes\LazyList.cs" />
-    <Compile Include="ConcreteTypes\Option.cs" />
-    <Compile Include="ConcreteTypes\StringSlice.cs" />
+    <Compile Include="Lazy\LazyList.cs" />
+    <Compile Include="Immutable\Option.cs" />
+    <Compile Include="Immutable\StringSlice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ConcreteTypes\MutableTrie.cs" />
+    <Compile Include="Mutable\MutableTrie.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
