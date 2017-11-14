@@ -8,9 +8,7 @@ namespace Richiban.Func
 
         private StringSlice(string stringValue, int position)
         {
-            _stringValue = string.IsNullOrEmpty(stringValue)
-                ? throw new ArgumentException("String slices cannot be empty", nameof(stringValue))
-                : stringValue;
+            _stringValue = stringValue;
 
             if (position >= stringValue.Length)
                 throw new InvalidOperationException(

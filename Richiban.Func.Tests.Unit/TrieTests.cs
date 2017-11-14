@@ -23,6 +23,16 @@ namespace Richiban.Func.Tests.Unit
         }
 
         [Test]
+        public void GivenAnEmptyTrie_WhenISetAValueToAnEmptyKey_ThenThatValueIsSet()
+        {
+            var key = "";
+            var value = Guid.NewGuid().GetHashCode();
+            var trie = new Trie<int> { [key] = value };
+
+            IsTrue(() => trie[key] == value);
+        }
+
+        [Test]
         public void GivenATrieThatContainsAValue_WhenIRemoveThatKeyThenRetrieveIt_ThenNoValueIsReturned()
         {
             var key = Guid.NewGuid().ToString();
