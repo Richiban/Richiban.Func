@@ -17,7 +17,7 @@ namespace Richiban.Func.Tests.Unit
         {
             var key = Guid.NewGuid().ToString();
             var value = Guid.NewGuid().GetHashCode();
-            var trie = new Trie<int> { [key] = value };
+            var trie = new MutableTrie<int> { [key] = value };
 
             IsTrue(() => trie[key] == value);
         }
@@ -27,7 +27,7 @@ namespace Richiban.Func.Tests.Unit
         {
             var key = "";
             var value = Guid.NewGuid().GetHashCode();
-            var trie = new Trie<int> { [key] = value };
+            var trie = new MutableTrie<int> { [key] = value };
 
             IsTrue(() => trie[key] == value);
         }
@@ -37,7 +37,7 @@ namespace Richiban.Func.Tests.Unit
         {
             var key = Guid.NewGuid().ToString();
             var value = Guid.NewGuid().GetHashCode();
-            var trie = new Trie<int> { [key] = value };
+            var trie = new MutableTrie<int> { [key] = value };
 
             trie.Remove(key);
 
@@ -47,7 +47,7 @@ namespace Richiban.Func.Tests.Unit
         [Test]
         public void GivenAnEmptyTrie_WhenIRetrieveAKey_ThenNoneIsReturned()
         {
-            var trie = new Trie<int>();
+            var trie = new MutableTrie<int>();
             var key = "hello";
 
             IsTrue(() => trie.TryGet(key).IsSome == false);
@@ -58,7 +58,7 @@ namespace Richiban.Func.Tests.Unit
         {
             var key = Guid.NewGuid().ToString();
             var value = Guid.NewGuid().GetHashCode();
-            var trie = new Trie<int> { [key] = value };
+            var trie = new MutableTrie<int> { [key] = value };
 
             IsTrue(() => trie.SequenceEqual(new[] { value }));
         }
@@ -79,7 +79,7 @@ namespace Richiban.Func.Tests.Unit
             var items = new HashSet<(string, int)>(
                 GetSequence().Take(Random.Next(maxValue: 30) + 20));
 
-            var trie = new Trie<int>();
+            var trie = new MutableTrie<int>();
 
             foreach (var (key, value) in items)
             {
@@ -97,7 +97,7 @@ namespace Richiban.Func.Tests.Unit
         [Test]
         public void GivenAnEmptyTrie_WhenIEnumerateTheTrie_ThenAnEmptySequenceIsReturned()
         {
-            var trie = new Trie<int>();
+            var trie = new MutableTrie<int>();
 
             IsTrue(() => trie.SequenceEqual(Enumerable.Empty<int>()));
         }

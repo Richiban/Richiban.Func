@@ -9,18 +9,18 @@ namespace Richiban.Func
     /// 
     /// Note that, like most dictionaries, the order in which items will be enumerated is undefined.
     /// </summary>
-    public sealed class Trie<T> : IMutableMap<string, T>
+    public sealed class MutableTrie<T> : IMutableMap<string, T>
     {
-        private readonly List<Trie<T>> _subTries = new List<Trie<T>>();
+        private readonly LinkedList<MutableTrie<T>> _subTries = new LinkedList<MutableTrie<T>>();
         private readonly char _nodeChar;
         private Option<T> _value;
 
-        private Trie(char nodeChar)
+        private MutableTrie(char nodeChar)
         {
             _nodeChar = nodeChar;
         }
 
-        public Trie() { }
+        public MutableTrie() { }
 
         public T this[string key]
         {
@@ -96,8 +96,8 @@ namespace Richiban.Func
 
             // We have reached the end of the current branch and now need to create a new subtrie to
             // extend the branch
-            var newSubTrie = new Trie<T>(nextKey.Current);
-            _subTries.Add(newSubTrie);
+            var newSubTrie = new MutableTrie<T>(nextKey.Current);
+            _subTries.AddFirst(newSubTrie);
 
             // Now add the value to the new subtrie
             return newSubTrie.Set(nextKey, value);
