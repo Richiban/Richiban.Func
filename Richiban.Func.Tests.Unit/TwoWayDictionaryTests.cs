@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using Shouldly;
 
@@ -31,6 +29,27 @@ namespace Richiban.Func.Tests.Unit
 
             original.Count.ShouldBe(0);
             original.Reversed.Count.ShouldBe(0);
+        }
+
+        [Test]
+        public void AddingASingleItemResultsInACountOfOne()
+        {
+            var left = Guid.NewGuid().ToString();
+            var right = Guid.NewGuid().GetHashCode();
+            var original = new TwoWayDictionary<string, int> { { left, right } };
+            
+            original.Count.ShouldBe(1);
+        }
+
+        [Test]
+        public void ValueFromOriginalShouldBeUsableAsKeyInReversed()
+        {
+            var left = Guid.NewGuid().ToString();
+            var right = Guid.NewGuid().GetHashCode();
+            var original = new TwoWayDictionary<string, int> { { left, right } };
+
+            original[left].ShouldBe(right);
+            original.Reversed[right].ShouldBe(left);
         }
     }
 }
