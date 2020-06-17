@@ -2,8 +2,10 @@
 
 namespace Richiban.Func
 {
-    internal struct StringSlice
+    public struct StringSlice
     {
+        private readonly string _stringValue;
+
         public StringSlice(string stringValue) : this(stringValue, position: -1) { }
 
         private StringSlice(string stringValue, int position)
@@ -18,10 +20,9 @@ namespace Richiban.Func
             Length = stringValue.Length - position;
             AtEnd = Length <= 1;
 
-            Current = position < 0 ? default(char) : stringValue[position];
+            Current = position < 0 ? default : stringValue[position];
         }
 
-        private readonly string _stringValue;
         public bool AtEnd { get; }
         public int Position { get; }
         public int Length { get; }

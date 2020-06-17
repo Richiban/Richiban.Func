@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace Richiban.Func
 {
-    /// <inheritdoc />
     /// <summary>
     /// A class that wraps an IEnumerable and stores each yielded element of that IEnumerable
     /// in a list, as it is evaluated.

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using static PowerAssert.PAssert;
+using Shouldly;
 
 namespace Richiban.Func.Tests.Unit
 {
@@ -19,7 +18,7 @@ namespace Richiban.Func.Tests.Unit
             var value = Guid.NewGuid().GetHashCode();
             var trie = new MutableTrie<int> { [key] = value };
 
-            IsTrue(() => trie[key] == value);
+            trie[key].ShouldBe(value);
         }
 
         [Test]
@@ -29,7 +28,7 @@ namespace Richiban.Func.Tests.Unit
             var value = Guid.NewGuid().GetHashCode();
             var trie = new MutableTrie<int> { [key] = value };
 
-            IsTrue(() => trie[key] == value);
+            trie[key].ShouldBe(value);
         }
 
         [Test]
@@ -41,7 +40,7 @@ namespace Richiban.Func.Tests.Unit
 
             trie.Remove(key);
 
-            IsTrue(() => trie.TryGet(key).IsSome == false);
+            trie.TryGet(key).IsSome.ShouldBeFalse();
         }
 
         [Test]
@@ -50,7 +49,7 @@ namespace Richiban.Func.Tests.Unit
             var trie = new MutableTrie<int>();
             var key = "hello";
 
-            IsTrue(() => trie.TryGet(key).IsSome == false);
+            trie.TryGet(key).IsSome.ShouldBeFalse();
         }
 
         [Test]
@@ -60,7 +59,7 @@ namespace Richiban.Func.Tests.Unit
             var value = Guid.NewGuid().GetHashCode();
             var trie = new MutableTrie<int> { [key] = value };
 
-            IsTrue(() => trie.SequenceEqual(new[] { value }));
+            trie.ShouldBe(new[] { value });
         }
 
         [Test]
@@ -90,7 +89,7 @@ namespace Richiban.Func.Tests.Unit
             var trieItems = new HashSet<int>(trie);
 
             Assert.That(
-                originalItems.SetEquals(trieItems), 
+                originalItems.SetEquals(trieItems),
                 $"{string.Join(", ", originalItems.Except(trieItems))} were not present in the Trie");
         }
 
@@ -99,7 +98,7 @@ namespace Richiban.Func.Tests.Unit
         {
             var trie = new MutableTrie<int>();
 
-            IsTrue(() => trie.SequenceEqual(Enumerable.Empty<int>()));
+            trie.ShouldBeEmpty();
         }
     }
 }

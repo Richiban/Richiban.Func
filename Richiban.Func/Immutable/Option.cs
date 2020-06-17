@@ -82,7 +82,7 @@ namespace Richiban.Func
             }
         }
 
-        public T GetValueOrDefault(T defaultValue = default(T))
+        public T GetValueOrDefault(T defaultValue = default)
         {
             if (IsSome)
                 return _value;

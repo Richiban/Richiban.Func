@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using Shouldly;
 
 namespace Richiban.Func.Tests.Unit
 {
@@ -11,7 +12,7 @@ namespace Richiban.Func.Tests.Unit
         {
             var none = Option<string>.None;
 
-            Assert.False(none.IsSome);
+            none.IsSome.ShouldBeFalse();
         }
 
         [Test]
@@ -20,7 +21,7 @@ namespace Richiban.Func.Tests.Unit
             var randomString = Guid.NewGuid().ToString();
             var some = Option<string>.Create(randomString);
 
-            Assert.True(some.IsSome);
+            some.IsSome.ShouldBeTrue();
         }
 
         [Test]

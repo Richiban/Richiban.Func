@@ -4,12 +4,11 @@ using System.Collections.Generic;
 
 namespace Richiban.Func
 {
-    /// <inheritdoc />
     /// <summary>
     /// A singly linked list that is lazily-evaluated but otherwise immutable.
     /// Supports deconstruction into a tuple of the head and tail.
     /// </summary>
-    public sealed class Chain<T> : IEnumerable<T>
+    public sealed class Chain<T> : IChain<T>
     {
         public Chain(IEnumerable<T> source) : this(source.GetEnumerator()) { }
 
@@ -49,6 +48,8 @@ namespace Richiban.Func
             }
         }
 
+        IChain<T> IChain<T>.Tail => Tail;
+        
         public T Head
         {
             get
@@ -64,7 +65,6 @@ namespace Richiban.Func
 
         public Chain<T> Tail
         {
-
             get
             {
                 EnsureMaterialized();

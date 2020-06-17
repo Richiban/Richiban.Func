@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using PowerAssert;
+using Shouldly;
 
 namespace Richiban.Func.Tests.Unit
 {
@@ -16,7 +17,7 @@ namespace Richiban.Func.Tests.Unit
 
             var classUnderTest = new LazyList<object>(enumerable);
 
-            PAssert.IsTrue(() => classUnderTest.Count == 0);
+            classUnderTest.Count.ShouldBe(0);
         }
 
         [Test]
@@ -26,27 +27,44 @@ namespace Richiban.Func.Tests.Unit
 
             var classUnderTest = new LazyList<int>(enumerable);
 
-            PAssert.IsTrue(() => classUnderTest.SequenceEqual(enumerable));
+            classUnderTest.ShouldBe(enumerable);
         }
 
         [Test]
         public void Retrieving_first_item_twice_does_not_reevaluate_enumerable()
         {
-            var trackingCount = new Ref<int> {Value = 0};
+            var trackingCount = new Ref<int> { Value = 0 };
 
             var enumerable = MakeTrackingSequence(trackingCount);
 
             var classUnderTest = new LazyList<int>(enumerable);
 
-            PAssert.IsTrue(() => trackingCount.Value == 0);
+            trackingCount.Value.ShouldBe(0);
 
             var a = classUnderTest[0];
 
-            PAssert.IsTrue(() => trackingCount.Value == 1);
+            trackingCount.Value.ShouldBe(1);
 
             var b = classUnderTest[0];
-            
-            PAssert.IsTrue(() => trackingCount.Value == 1);
+
+            trackingCount.Value.ShouldBe(1);
+        }
+
+        [Test]
+        public void Finishing_the_enumeration_disposes_the_given_enumerator()
+        {
+            var enumerable = new ObservableEnumerable<int>();
+
+            var subjectUnderTest = new LazyList<int>(enumerable);
+
+            var enumerator = enumerable.Enumerator;
+
+            enumerator.IsDisposed.ShouldBeFalse();
+
+            foreach (var item in subjectUnderTest)
+            { }
+
+            enumerator.IsDisposed.ShouldBeTrue();
         }
 
         private IEnumerable<int> MakeTrackingSequence(Ref<int> trackingCount)
@@ -58,6 +76,28 @@ namespace Richiban.Func.Tests.Unit
         private class Ref<T>
         {
             public T Value { get; set; }
+        }
+
+        private class ObservableEnumerator<T> : IEnumerator<T>
+        {
+            public T Current { get; }
+            public bool IsDisposed { get; private set; }
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() => IsDisposed = true;
+
+            public bool MoveNext() => false;
+
+            public void Reset() => throw new NotImplementedException();
+        }
+
+        private class ObservableEnumerable<T> : IEnumerable<T>
+        {
+            public ObservableEnumerator<T> Enumerator = new ObservableEnumerator<T>();
+            public IEnumerator<T> GetEnumerator() => Enumerator;
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
         private static readonly Random Random = new Random();

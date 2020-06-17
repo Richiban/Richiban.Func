@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using PowerAssert;
+using Shouldly;
 
 namespace Richiban.Func.Tests.Unit
 {
@@ -124,7 +124,7 @@ namespace Richiban.Func.Tests.Unit
             var chain = new Chain<int>(new[] { element });
             var (first, _) = chain;
 
-            PAssert.IsTrue(() => first == element);
+            first.ShouldBe(element);
         }
 
         [Test]
@@ -134,7 +134,7 @@ namespace Richiban.Func.Tests.Unit
             var chain = new Chain<int>(new[] { element });
             var (_, second) = chain;
 
-            PAssert.IsTrue(() => second == chain.Tail);
+            second.ShouldBe(chain.Tail);
         }
 
         [Test]
@@ -152,7 +152,7 @@ namespace Richiban.Func.Tests.Unit
                 chain = chain.Tail;
             }
 
-            PAssert.IsTrue(() => chain.Head == items[index]);
+            chain.Head.ShouldBe(items[index]);
         }
 
         [Test]
